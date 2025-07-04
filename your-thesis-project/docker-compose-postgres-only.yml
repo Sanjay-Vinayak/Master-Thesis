@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:17.5-bullseye
+    container_name: ecom_postgresql_only
+    ports:
+      - "5433:5432" # Mapping to 5433 to avoid conflicts if hybrid still running
+    environment:
+      POSTGRES_DB: ecom_only_db # A new database name to keep it separate
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_only_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d ecom_only_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_only_data:
